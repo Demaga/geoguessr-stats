@@ -1,4 +1,3 @@
-console.log("background.js");
 browser.action.onClicked.addListener((message) => {
     browser.tabs.create({
         url: 'events.html'
@@ -64,8 +63,6 @@ async function saveData(data) {
 }
 
 browser.runtime.onMessage.addListener((message) => {
-    console.log("ws: received data from content script", message);
-
     let data = JSON.parse(message.data);
     if (data["code"] == "BullseyeGuess")
         return
@@ -74,8 +71,53 @@ browser.runtime.onMessage.addListener((message) => {
         "timestamp": data["timestamp"],
         "data": data
     }
-    console.log(to_save);
     saveData(to_save);
-
     console.log("ws: data saved", message);
 });
+
+browser.webRequest.onBeforeRequest.addListener(
+    (details) => {
+        if (details.method != "POST")
+            return
+
+        var data = [];
+        let filter = browser.webRequest.filterResponseData(details.requestId);
+        filter.ondata = (event) => {
+            data.push(event.data);
+        };
+
+        filter.onstop = (event) => {
+            let decoder = new TextDecoder("utf-8");
+            let encoder = new TextEncoder();
+
+            let str = "";
+            if (data.length === 1) {
+                str = decoder.decode(data[0]);
+            } else {
+                for (let i = 0; i < data.length; i++) {
+                    const stream = i !== data.length - 1;
+                    str += decoder.decode(data[i], { stream });
+                }
+            }
+            let obj = JSON.parse(str);
+
+            let to_save = {
+                "code": "singlePlayerGameRoundFinished",
+                "timestamp": new Date().toISOString(),
+                "data": obj
+            }
+            saveData(to_save);
+            console.log("webRequest: data saved", to_save);
+
+            filter.write(encoder.encode(str));
+            filter.disconnect();
+        };
+
+        return {};
+
+    },
+    {
+        "urls": ["https://www.geoguessr.com/api/v3/games/*"]
+    },
+    ["blocking"],
+)

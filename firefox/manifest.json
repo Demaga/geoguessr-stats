@@ -15,7 +15,10 @@
         "128": "../icon.png"
     },
     "permissions": [
-        "storage"
+        "storage",
+        "webRequest",
+        "webRequestBlocking",
+        "webRequestFilterResponse"
     ],
     "background": {
         "scripts": [

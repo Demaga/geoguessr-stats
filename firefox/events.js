@@ -138,6 +138,7 @@ class Stats {
         this.players_today = this.getPlayers(true);
         this.addPlayersSelectOptions();
 
+        this.gameType = "party";
         this.roundCount = 5;
         this.roundTime = 90;
         this.movingAllowed = true;
@@ -171,6 +172,7 @@ class Stats {
 
     addFilterEventListeners() {
         let filters = [
+            "gameTypeSelect",
             "timeFrameSelect",
             "roundCount",
             "roundTime",
