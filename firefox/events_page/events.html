@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GeoGuessr Stats</title>
+    <link rel="stylesheet" href="../libs/flatpickr/flatpickr.min.css" />
+    <link rel="stylesheet" href="events.css" />
+</head>
+
+<body>
+    <div id="loading-overlay" class="loading-overlay" style="display: flex">
+        <div class="loading-spinner-container">
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <div id="customToast" class="custom-toast">
+        <p id="customToastMessage"></p>
+        <button id="customToastCloseBtn" class="custom-toast__close-btn" type="button">
+            <svg class="toast-icon" width="16" height="16">
+                <use href="../assets/icons/sprite.svg#icon-cross"></use>
+            </svg>
+        </button>
+    </div>
+
+    <div id="content-wrapper">
+        <header class="section section-header">
+            <div class="container header-container">
+                <div class="logo">
+                    <img src="../assets/images/icon.png" width="60px" height="60px" class="icon" />
+                    <h1 class="logo-text">GeoGuessr Stats</h1>
+                </div>
+                <div id="exportImport">
+                    <button id="kmMilesSwitch">Switch to miles</button>
+                    <button id="exportButton">Export Data</button>
+                    <button id="importButton">Import Data</button>
+
+                    <input type="file" id="importFileInput" accept=".json,.jsonl" style="display: none" />
+                </div>
+            </div>
+        </header>
+
+        <section class="section section-top-score">
+            <div class="container top-score-container">
+
+                <div class="top-score-content">
+                    <div id="statsFilters">
+                        <div class="statsFilter">
+                            <span>Timeframe</span>
+                            <select id="timeFrame">
+                                <option value="allTime">All Time</option>
+                                <option value="today">Today</option>
+                                <option value="customRange">Custom Range</option>
+                            </select>
+                        </div>
+                        <div class="statsFilter" id="dateRangeFilter" style="display: none;">
+                            <span>Date Range</span>
+                            <input type="text" id="dateRangePicker" placeholder="Select a date range...">
+                        </div>
+                        <div class="statsFilter">
+                            <span>Map</span>
+                            <select id="mapSelect">
+                                <option value="All">All</option>
+                            </select>
+                        </div>
+                        <div class="statsFilter">
+                            <span>Player</span>
+                            <select id="playerSelect">
+                                <option value="All">All</option>
+                            </select>
+                        </div>
+                        <div class="statsFilter">
+                            <span>Round Count</span>
+                            <input type="checkbox" id="anyRoundCount" checked />
+                            <label for="anyRoundCount">Any</label>
+                            <input style="display: none" type="number" id="roundCount" value="5" min="1" max="50" />
+                        </div>
+                        <div class="statsFilter">
+                            <span>Round Time</span>
+                            <input type="checkbox" id="anyRoundTime" checked />
+                            <label for="anyRoundTime">Any</label>
+                            <input style="display: none" type="number" id="roundTime" value="90" min="10" max="600"
+                                step="10" />
+                        </div>
+                        <div class="statsFilter">
+                            <span>Map settings</span>
+                            <div style="display: block">
+                                <div>
+                                    <input type="checkbox" id="anyOptions" checked />
+                                    <label for="anyOptions">Any</label>
+                                </div>
+                                <div>
+                                    <input style="display: none" type="checkbox" id="movingAllowed" checked />
+                                    <label style="display: none" for="movingAllowed" id="movingAllowedLabel">Moving
+                                        Allowed</label>
+                                </div>
+                                <div>
+                                    <input style="display: none" type="checkbox" id="panningAllowed" checked />
+                                    <label style="display: none" for="panningAllowed" id="panningAllowedLabel">Panning
+                                        Allowed</label>
+                                </div>
+                                <div>
+                                    <input style="display: none" type="checkbox" id="zoomingAllowed" checked />
+                                    <label style="display: none" for="zoomingAllowed" id="zoomingAllowedLabel">Zooming
+                                        Allowed</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="topScore">
+                        <p id="noDataMessage" style="display: none">
+                            No data found for the selected filters.
+                        </p>
+
+                        <div id="scoreListContainer">
+                            <ol id="scoreList"></ol>
+                        </div>
+                        <button id="loadMoreButton">Load More</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section-history-table" id="section-history-table">
+            <div class="container history-table-container">
+                <h2 class="title">Game History Details</h2>
+                <div class="table-wrapper">
+                    <table class="history-table">
+                        <colgroup>
+                            <col style="width: 30px" />
+                            <col />
+                            <col />
+                            <col style="width: 18%;" />
+                            <col />
+                            <col style="width: 30px" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Date</th>
+                                <th>Map name</th>
+                                <th>Round time</th>
+                                <th>Moving allowed</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                        </tbody>
+                    </table>
+                </div>
+                <div id="tablePaginationControls" class="pagination-controls" style="display: none;">
+                    <button id="tablePrevButton" class="pagination-btn" disabled>
+                        < Prev</button>
+                            <span id="tablePageIndicator" class="page-indicator">1 / 1</span>
+                            <button id="tableNextButton" class="pagination-btn">Next ></button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <template id="details-table-template">
+        <div class="nested-table-wrapper">
+            <table class="nested-table">
+                <colgroup>
+                    <col style="width: 30px" />
+                    <col / style="width: 40px" />
+                    <col / style="width: 40px;">
+                    <col style="width: 17%;" />
+                    <col />
+                    <col />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Rnd.</th>
+                        <th>Ctry.</th>
+                        <th>Correct Point</th>
+                        <th>Best Guess</th>
+                        <th>Fastest Guess</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+    <template id="details-row-template">
+        <tr>
+            <td>
+                <svg class="expand-arrow" width="25" height="25">
+                    <use href="../assets/icons/sprite.svg#icon-arrow"></use>
+                </svg>
+            </td>
+            <td class="round-number"></td>
+            <td class="country"></td>
+            <td class="correct-location">
+                <a href="" target="_blank">View on Map</a>
+            </td>
+            <td class="best-guess"></td>
+            <td class="fastest-guess"></td>
+        </tr>
+    </template>
+
+    <template id="player-guesses-table-template">
+        <div class="nested-table-wrapper player-guesses-wrapper">
+            <table class="nested-table player-guesses-table">
+                <thead>
+                    <tr>
+                        <th>Player Name</th>
+                        <th>Guess Point</th>
+                        <th>Score</th>
+                        <th>Distance</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+    <template id="player-guess-row-template">
+        <tr>
+            <td class="player-name"></td>
+            <td class="guess-location">
+                <a href="" target="_blank">View Guess</a>
+            </td>
+            <td class="guess-score"></td>
+            <td class="guess-distance"></td>
+            <td class="guess-time"></td>
+        </tr>
+    </template>
+
+    <script src="../libs/flatpickr/flatpickr.min.js"></script>
+    <script src="events.js"></script>
+</body>
+
+</html>

@@ -81,6 +81,7 @@ body {
   transition: 0.3s ease;
 }
 
+#kmMilesSwitch:hover,
 #exportButton:hover,
 #importButton:hover,
 #loadMoreButton:hover {

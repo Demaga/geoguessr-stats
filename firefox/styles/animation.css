@@ -1,0 +1,52 @@
+@keyframes jump-with-pause {
+
+    0%,
+    8%,
+    100% {
+        transform: translateY(0);
+    }
+
+    4% {
+        transform: translateY(-5px);
+    }
+
+    20% {
+        transform: translateY(0);
+    }
+
+    24% {
+        transform: translateY(-5px);
+    }
+
+    28% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(0);
+    }
+
+    44% {
+        transform: translateY(-5px);
+    }
+
+    48% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes render {
+    0% {
+        stroke-dasharray: 0 100;
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

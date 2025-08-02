@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GeoGuessr Stats</title>
+    <link rel="stylesheet" href="popup.css" />
+</head>
+
+<body>
+    <div class="container" id="container">
+        <nav class="navigation" id="navigation">
+            <a href="#" id="today-link" class="active">Today</a>
+            <a href="#" id="all-time-link">All time</a>
+        </nav>
+
+        <div class="content-wrapper" id="content-wrapper">
+            <div class="content">
+                <div class="stat-section section">
+                    <div class="stat-item">
+                        <span class="stat-label">Games Played:</span>
+                        <span class="stat-value" id="total-games">...</span>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-label">Best Score:</span>
+                        <span class="stat-value" id="best-score">...</span>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-label">Total Time:</span>
+                        <span class="stat-value" id="total-time">...</span>
+                    </div>
+
+                    <div class="win-block">
+                        <div class="stat-win" data-tooltip="Total wins!">
+                            <img src="../assets/icons/trophy.svg" width="30" height="30" />
+                            <span class="stat-value" id="win-count">...</span>
+                        </div>
+                        <div class="stat-win" data-tooltip="Win streak!">
+                            <img id="fire-icon" src="../assets/icons/fire.svg" width="30" height="30"/>
+                            <span class="stat-value" id="win-streak">...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="last-map-section section">
+                    <div class="last-map-title">
+                        <h4>Last map:</h4>
+                        <p id="last-map-name">...</p>
+                    </div>
+                    <div class="table-container" data-tooltip="Last games on this map">
+                        <table id="last-map-table">
+                            <colgroup>
+                                <col style="width: 30%" />
+                                <col style="width: 15%" />
+                                <col style="width: 55%" />
+                            </colgroup>
+                            <thead>
+                                <tr id="last-map-header"></tr>
+                            </thead>
+                            <tbody id="last-map-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="no-data" id="no-data">
+            <p class="no-data-text">
+                <span class="no-data-span jumpy-text">
+                    <span>D</span><span>i</span><span>s</span><span>c</span><span>o</span><span>v</span><span>e</span><span>r</span><span>i</span><span>e</span><span>s</span>
+                    <span>a</span><span>w</span><span>a</span><span>i</span><span>t</span><span>.</span><span>.</span><span>.</span>
+                </span>
+                <br />Make your first move!
+            </p>
+            <p class="error-text"></p>
+        </div>
+
+        <footer>
+            <div class="footer-text" id="footer">
+                <a href="/events_page/events.html" target="_blank" id="fullStatsLink">View Full Stats</a>
+                <a href="https://forms.gle/pfvotHtUj3RhaRXW9" target="_blank" class="feedback">Leave Feedback</a>
+            </div>
+        </footer>
+    </div>
+
+    <div id="loading-overlay" class="loading-overlay" style="display: none">
+        <div class="loading-spinner-container">
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <script type="module" src="popup.js"></script>
+</body>
+
+</html>

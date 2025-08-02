@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "GeoGuessr Stats",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Collect records of your party GeoGuessr games.",
     "action": {
         "default_title": "GeoGuessr Stats"
@@ -12,7 +12,7 @@
         }
     },
     "icons": {
-        "128": "../icon.png"
+        "128": "assets/images/icon.png"
     },
     "background": {
         "scripts": [
@@ -21,24 +21,22 @@
     },
     "content_scripts": [
         {
-            "world": "MAIN",
-            "matches": [
-                "https://www.geoguessr.com/*"
-            ],
-            "js": [
-                "content_main.js"
-            ],
-            "run_at": "document_start"
+            "matches": ["https://www.geoguessr.com/*"],
+            "js": ["content_scripts/content_main.js"],
+            "run_at": "document_start",
+            "world": "MAIN"
         },
-        {
-            "world": "ISOLATED",
-            "matches": [
-                "https://www.geoguessr.com/*"
-            ],
-            "js": [
-                "content_isolated.js"
-            ],
-            "run_at": "document_start"
-        }
+       {
+            "matches": ["https://www.geoguessr.com/*"],
+            "js": ["content_scripts/content_isolated.js"],
+            "run_at": "document_start",
+            "world": "ISOLATED"
+       }
+    ],
+    "permissions": [
+        "storage"
+    ],
+    "host_permissions": [
+        "*://*.geoguessr.com/*"
     ]
 }
